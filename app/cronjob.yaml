@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello
+spec:
+  schedule: "* * * * *" #every minute
+  concurrencyPolicy: Forbid
+  suspend: false
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: test-gke
+            image: $CONTAINER_IMAGE
+            envFrom:
+              - configMapRef:
+                  name: hello-config
+            imagePullPolicy: Always
+          restartPolicy: OnFailure
